@@ -47,7 +47,7 @@ const WishlistPage = () => {
     getUserByEmail();
   }, [session?.user?.email, wishlist.length]);
   return (
-    <div className="bg-white">
+    <div className="bg-white" >
       <SectionTitle title="Wishlist" path="Home | Wishlist" />
       {wishlist && wishlist.length === 0 ? (
         <h3 className="text-center text-4xl py-10 text-black max-lg:text-3xl max-sm:text-2xl max-sm:pt-5 max-[400px]:text-xl">

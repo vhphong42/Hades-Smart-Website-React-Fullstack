@@ -80,3 +80,30 @@ interface WishListItem {
   productId: string;
   product: Product;
 }
+declare namespace JSX {
+  interface IntrinsicElements {
+    'df-messenger': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
+      'chat-title': string;
+      'agent-id': string;
+      'language-code': string;
+    };
+  }
+}
+declare module 'react-chartjs-2' {
+  import { ChartData, ChartOptions } from 'chart.js';
+
+  export interface ChartProps {
+    data: ChartData;
+    options?: ChartOptions;
+    [key: string]: any;
+  }
+
+  export const Bar: React.FC<ChartProps>;
+  export const Doughnut: React.FC<ChartProps>;
+  export const Line: React.FC<ChartProps>;
+  export const Pie: React.FC<ChartProps>;
+  export const PolarArea: React.FC<ChartProps>;
+  export const Radar: React.FC<ChartProps>;
+  export const Scatter: React.FC<ChartProps>;
+  export const Bubble: React.FC<ChartProps>;
+}

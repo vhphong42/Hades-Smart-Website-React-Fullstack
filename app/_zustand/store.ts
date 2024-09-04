@@ -7,6 +7,8 @@ export type ProductInCart = {
   price: number;
   image: string;
   amount: number;
+  originalPrice?: number; // Make sure this field is optional or required as needed
+
 };
 
 export type State = {

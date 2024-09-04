@@ -1,13 +1,3 @@
-// *********************
-// Role of the component: Cart icon and quantity that will be located in the header
-// Name of the component: CartElement.tsx
-// Developer: Aleksandar Kuzmanovic
-// Version: 1.0
-// Component call: <CartElement />
-// Input parameters: no input parameters
-// Output: Cart icon and quantity
-// *********************
-
 "use client";
 import Link from 'next/link'
 import React from 'react'

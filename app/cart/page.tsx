@@ -7,21 +7,55 @@ import {
   SectionTitle,
 } from "@/components";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaCheck, FaClock, FaCircleQuestion, FaXmark } from "react-icons/fa6";
 import { useProductStore } from "../_zustand/store";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
+// Fetch user data from the API
+const fetchUser = async () => {
+  try {
+    const response = await fetch("http://localhost:3000/admin/users");
+    if (!response.ok) {
+      throw new Error("Failed to fetch user data");
+    }
+    const users = await response.json();
+    return users;
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    return [];
+  }
+};
+
 const CartPage = () => {
-  const { products, removeFromCart, calculateTotals, total } =
-    useProductStore();
+  const { products, removeFromCart, calculateTotals, total } = useProductStore();
+  const [isVIP, setIsVIP] = useState(false);
+  
+  useEffect(() => {
+    const checkVIPStatus = async () => {
+      const users = await fetchUser();
+      // Assuming the current user is the first one in the fetched list
+      const currentUser = users[0]; // Adjust this based on how you identify the current user
+      if (currentUser && currentUser.role === 'vip') {
+        setIsVIP(true);
+      }
+    };
+
+    checkVIPStatus();
+  }, []);
 
   const handleRemoveItem = (id: string) => {
     removeFromCart(id);
     calculateTotals();
     toast.success("Product removed from the cart");
   };
+
+  // Calculate the total with a potential VIP discount
+  const shippingCost = 5.00;
+  const taxEstimate = total / 5;
+  const originalTotal = total + shippingCost + taxEstimate;
+  const finalTotal = isVIP ? Math.round(originalTotal ) : Math.round(originalTotal* 0.9);
 
   return (
     <div className="bg-white">
@@ -66,12 +100,6 @@ const CartPage = () => {
                               </Link>
                             </h3>
                           </div>
-                          {/* <div className="mt-1 flex text-sm">
-                        <p className="text-gray-500">{product.color}</p>
-                        {product.size ? (
-                          <p className="ml-4 border-l border-gray-200 pl-4 text-gray-500">{product.size}</p>
-                        ) : null}
-                      </div> */}
                           <p className="mt-1 text-sm font-medium text-gray-900">
                             ${product.price}
                           </p>
@@ -167,16 +195,23 @@ const CartPage = () => {
                     </a>
                   </dt>
                   <dd className="text-sm font-medium text-gray-900">
-                    ${total / 5}
+                    ${taxEstimate}
                   </dd>
                 </div>
                 <div className="flex items-center justify-between border-t border-gray-200 pt-4">
                   <dt className="text-base font-medium text-gray-900">
                     Order total
                   </dt>
-                  <dd className="text-base font-medium text-gray-900">
-                    ${total === 0 ? 0 : Math.round(total + total / 5 + 5)}
-                  </dd>
+                  <div className="flex flex-col">
+                    {/* Display the original total with a strikethrough */}
+                    <dd className="text-base font-medium text-gray-900 line-through">
+                      ${originalTotal}
+                    </dd>
+                    {/* Display the discounted total */}
+                    <dd className="text-base font-medium text-gray-900">
+                      ${finalTotal}
+                    </dd>
+                  </div>
                 </div>
               </dl>
               {products.length > 0 && (
